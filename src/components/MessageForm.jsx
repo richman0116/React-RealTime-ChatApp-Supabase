@@ -19,8 +19,24 @@ export default function MessageForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!session) {
+      toast({
+        description: "You need to log in to use the public chat.",
+        status: "error",
+        duration: 3000,
+      });
+      return;
+    }
     setIsSending(true);
-    if (!message) return;
+    if (!message) {
+      setIsSending(false);
+      toast({
+        description: "Please input your message.",
+        status: "error",
+        duration: 3000,
+      });
+      return;
+    }
 
     setMessage("");
 
@@ -40,12 +56,12 @@ export default function MessageForm() {
           title: "Error sending",
           description: error.message,
           status: "error",
-          duration: 9000,
+          duration: 5000,
           isClosable: true,
         });
         return;
       }
-      console.log("Sucsessfully sent!");
+      console.log("Successfully sent!");
     } catch (error) {
       console.log("error sending message:", error);
     } finally {
