@@ -1,0 +1,44 @@
+{
+  "name": "realtime-chat-supabase-react",
+  "version": "0.2.0",
+  "private": false,
+  "author": "richman0116",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shwosner/realtime-chat-supabase-react"
+  },
+  "type": "module",
+  "dependencies": {
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@supabase/supabase-js": "^2.39.0",
+    "dayjs": "^1.11.10",
+    "framer-motion": "^10.16.12",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.12.0",
+    "react-router-dom": "^6.20.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
+    "vite": "^5.0.5"
+  },
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 3001",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
