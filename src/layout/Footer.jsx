@@ -1,5 +1,5 @@
 import { Box, Grid, GridItem } from "@chakra-ui/react";
-import { FaGithub, FaTwitter } from "react-icons/fa";
+import { FaGithub, FaAddressCard } from "react-icons/fa";
 import MessageForm from "../components/MessageForm";
 export default function Footer() {
   return (
@@ -16,15 +16,13 @@ export default function Footer() {
         bg="white"
       >
         <GridItem justifySelf="start">
-          {/* Built by{" "} */}
-          {/* <a href="http://shimon-wosner.vercel.app" target="_blank"> */}
           <a
             href="https://twitter.com"
             target="_blank"
             rel="noreferrer"
           >
-            <FaTwitter style={{ display: "inline" }} />
-            @richman0116
+            <FaAddressCard style={{ display: "inline" }} />
+            My Portfolio
           </a>
         </GridItem>
         <GridItem justifySelf="end">

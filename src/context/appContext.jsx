@@ -12,8 +12,7 @@ const AppContextProvider = ({ children }) => {
   const [loadingInitial, setLoadingInitial] = useState(true);
   const [routeHash, setRouteHash] = useState("");
   const [isOnBottom, setIsOnBottom] = useState(false);
-  const [newIncomingMessageTrigger, setNewIncomingMessageTrigger] =
-    useState(null);
+  const [newIncomingMessageTrigger, setNewIncomingMessageTrigger] = useState(null);
   const [unviewedMessageCount, setUnviewedMessageCount] = useState(0);
   const [countryCode, setCountryCode] = useState("");
   const [isInitialLoad, setIsInitialLoad] = useState(false);
@@ -119,7 +118,7 @@ const AppContextProvider = ({ children }) => {
       .from("messages")
       .select()
       .range(0, 49)
-      .order("id", { ascending: false });
+      .order("id", { ascending: true });
     // console.log(`data`, data);
 
     setLoadingInitial(false);
@@ -175,7 +174,7 @@ const AppContextProvider = ({ children }) => {
         .from("messages")
         .select()
         .range(messages.length, messages.length + 49)
-        .order("id", { ascending: false });
+        .order("id", { ascending: true });
       if (error) {
         setError(error.message);
         return;
