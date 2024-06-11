@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   Input,
   Stack,
@@ -13,9 +13,51 @@ import supabase from "../supabaseClient";
 
 export default function MessageForm() {
   const { username, country, session } = useAppContext();
+  const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
-  const toast = useToast();
   const [isSending, setIsSending] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editIndex, setEditIndex] = useState(null);
+  const inputRef = useRef(null);
+  const toast = useToast();
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      const { data, error } = await supabase.from("messages").select("*");
+      if (error) {
+        console.error("Error fetching messages:", error);
+      } else {
+        setMessages(data);
+      }
+    };
+    fetchMessages();
+  }, []);
+
+  const handleKeyDown = useCallback(
+    (event) => {
+      if (event.key === "ArrowUp" && !isEditing && message === "" && messages.length > 0) {
+        const lastIndex = messages.length - 1;
+        const lastMessage = messages[lastIndex];
+
+        if (lastMessage && lastMessage.text) {
+          setMessage(lastMessage.text);
+          setIsEditing(true);
+          setEditIndex(lastIndex);
+          inputRef.current.focus();
+        }
+      }
+    },
+    [messages, isEditing, message]
+  );
+
+  useEffect(() => {
+    const inputElement = inputRef.current;
+    inputElement.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      inputElement.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleKeyDown]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,46 +66,67 @@ export default function MessageForm() {
         description: "You need to log in to use the public chat.",
         status: "error",
         duration: 3000,
+        isClosable: true,
       });
       return;
     }
-    setIsSending(true);
-    if (!message) {
-      setIsSending(false);
+
+    if (!message.trim()) {
       toast({
         description: "Please input your message.",
         status: "error",
         duration: 3000,
+        isClosable: true,
       });
       return;
     }
 
-    setMessage("");
+    setIsSending(true);
 
     try {
-      const { error } = await supabase.from("messages").insert([
-        {
-          text: message,
-          username,
-          country,
-          is_authenticated: session ? true : false,
-        },
-      ]);
+      if (isEditing && editIndex !== null) {
+        const { error } = await supabase
+          .from("messages")
+          .update({ text: message.trim() })
+          .eq("id", messages[editIndex].id);
 
-      if (error) {
-        console.error(error.message);
-        toast({
-          title: "Error sending",
-          description: error.message,
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
-        return;
+        if (error) {
+          throw error;
+        }
+
+        setMessages((prevMessages) =>
+          prevMessages.map((msg, index) =>
+            index === editIndex ? { ...msg, text: message.trim() } : msg
+          )
+        );
+      } else {
+        const { data, error } = await supabase.from("messages").insert([
+          {
+            text: message.trim(),
+            username,
+            country,
+            is_authenticated: !!session,
+          },
+        ]).single();
+
+        if (error) {
+          throw error;
+        }
+
+        setMessages((prevMessages) => [...prevMessages, data]);
       }
-      console.log("Successfully sent!");
+
+      setIsEditing(false);
+      setEditIndex(null);
+      setMessage("");
     } catch (error) {
-      console.log("error sending message:", error);
+      toast({
+        title: "Error sending message",
+        description: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     } finally {
       setIsSending(false);
     }
@@ -81,24 +144,22 @@ export default function MessageForm() {
               value={message}
               bg="white"
               border="none"
+              ref={inputRef}
               autoFocus
               maxLength="500"
             />
             <IconButton
-              // variant="outline"
               colorScheme="teal"
               aria-label="Send"
               fontSize="20px"
               icon={<BiSend />}
               type="submit"
-              disabled={!message}
               isLoading={isSending}
             />
           </Stack>
         </form>
         <Box fontSize="10px" mt="1">
-          Warning: do not share any sensitive information, it's a public chat
-          room 🙂
+          Warning: do not share any sensitive information, it's a public chat room 🙂
         </Box>
       </Container>
     </Box>
