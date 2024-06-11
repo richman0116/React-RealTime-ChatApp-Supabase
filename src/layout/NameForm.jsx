@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Input, Stack, IconButton } from "@chakra-ui/react";
 import { BiSave, BiEdit } from "react-icons/bi";
 import { useAppContext } from "../context/appContext";
@@ -29,12 +29,18 @@ export default function NameForm() {
       setNewUsername(username);
       return;
     }
-    // setUsername(newUsername);
-    // setIsEditing(false);
 
     setUsername(newUsername);
     localStorage.setItem("username", newUsername);
   };
+
+  const handleEdit = useCallback((e) => {
+    if (isEditing) {
+      handleSubmit(e);
+    } else {
+      toggleEditing();
+    }
+  }, [])
 
   return (
     <form onSubmit={handleSubmit} style={{ marginRight: "20px" }}>
@@ -66,11 +72,7 @@ export default function NameForm() {
           fontSize="15px"
           icon={isEditing ? <BiSave /> : <BiEdit />}
           border="none"
-          onClick={(e) => {
-            if (isEditing) {
-              handleSubmit(e);
-            } else toggleEditing();
-          }}
+          onClick={(e) => handleEdit(e)}
         />
       </Stack>
     </form>

@@ -4,8 +4,25 @@ import supabase from "../supabaseClient";
 
 import { useAppContext } from "../context/appContext";
 import NameForm from "./NameForm";
+import { useCallback } from "react";
 export default function Header() {
   const { username, setUsername, randomUsername, session } = useAppContext();
+
+  const handleLogIn = useCallback(() => {
+    const redirectTo = import.meta.env.VITE_SUPABASE_REDIRECT_URL || window.location.origin;
+    supabase.auth.signInWithOAuth({
+      provider: 'github',
+      redirectTo,
+    });
+  }, [])
+
+  const handleLogOut = useCallback(() => {
+    const { error } = supabase.auth.signOut();
+    if (error) return console.error("error signOut", error);
+    const username = randomUsername();
+    setUsername(username);
+    localStorage.setItem("username", username);
+  }, [])
 
   return (
     <Grid
@@ -30,13 +47,7 @@ export default function Header() {
             marginRight="4"
             size="sm"
             variant="link"
-            onClick={() => {
-              const { error } = supabase.auth.signOut();
-              if (error) return console.error("error signOut", error);
-              const username = randomUsername();
-              setUsername(username);
-              localStorage.setItem("username", username);
-            }}
+            onClick={handleLogOut}
           >
             Log out
           </Button>
@@ -52,12 +63,7 @@ export default function Header() {
             colorScheme="teal"
             rightIcon={<FaGithub />}
             variant="outline"
-            onClick={() =>
-              supabase.auth.signInWithOAuth({
-                provider: "github",
-                redirectTo: window.location.origin,
-              })
-            }
+            onClick={handleLogIn}
           >
             Login
           </Button>

@@ -4,7 +4,7 @@ import "./App.css";
 import Header from "./layout/Header";
 import Footer from "./layout/Footer";
 import Chat from "./components/Chat";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppContextProvider, useAppContext } from "./context/appContext";
 
 function App() {
@@ -29,7 +29,7 @@ function App() {
       <AppContextProvider>
         <Box bg="gray.100">
           {/* <ColorModeSwitcher justifySelf="flex-end" /> */}
-          <Router>
+          <BrowserRouter>
             <Routes>
               <Route
                 path="/"
@@ -43,7 +43,7 @@ function App() {
               />
               <Route path="*" element={<p>Not found</p>} />
             </Routes>
-          </Router>
+          </BrowserRouter>
         </Box>
       </AppContextProvider>
     </ChakraProvider>
