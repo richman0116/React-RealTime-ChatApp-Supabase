@@ -118,7 +118,7 @@ const AppContextProvider = ({ children }) => {
       .from("messages")
       .select()
       .range(0, 49)
-      .order("id", { ascending: true });
+      .order("id", { ascending: false });
     // console.log(`data`, data);
 
     setLoadingInitial(false);
@@ -174,7 +174,7 @@ const AppContextProvider = ({ children }) => {
         .from("messages")
         .select()
         .range(messages.length, messages.length + 49)
-        .order("id", { ascending: true });
+        .order("id", { ascending: false });
       if (error) {
         setError(error.message);
         return;

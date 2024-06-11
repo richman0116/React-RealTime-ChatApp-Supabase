@@ -5,6 +5,8 @@ import Message from "./Message";
 export default function Messages() {
   const { username, loadingInitial, error, getMessagesAndSubscribe, messages } = useAppContext();
 
+  const reversedMessages = [...messages].reverse();
+
   if (loadingInitial)
     return (
       <Box textAlign="center">
@@ -33,7 +35,7 @@ export default function Messages() {
       </Box>
     );
 
-  return messages.map((message) => {
+  return reversedMessages.map((message) => {
     const isYou = message.username === username;
     return <Message key={message.id} message={message} isYou={isYou} />;
   });
