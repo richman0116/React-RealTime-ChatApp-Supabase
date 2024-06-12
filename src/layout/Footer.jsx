@@ -13,7 +13,7 @@ export default function Footer() {
         py="4px"
         px="30px"
         height="40px"
-        bg="white"
+        bg="#202020"
       >
         <GridItem justifySelf="start">
           <a

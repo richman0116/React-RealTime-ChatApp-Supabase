@@ -20,10 +20,10 @@ export default function Chat() {
   }, []);
 
   return (
-    <Container maxW="600px" pb="20px">
+    <Container maxW="700px" pb="20px" color={'white'}>
       <Box
-        bg="white"
-        p="5"
+        bg="#141414"
+        p="7"
         overflow="auto"
         borderRadius="10px"
         height={height}
