@@ -27,7 +27,7 @@ function App() {
   return (
     <ChakraProvider theme={theme}>
       <AppContextProvider>
-        <Box bg="gray.100">
+        <Box bg="black">
           {/* <ColorModeSwitcher justifySelf="flex-end" /> */}
           <BrowserRouter>
             <Routes>

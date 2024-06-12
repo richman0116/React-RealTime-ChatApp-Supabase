@@ -30,24 +30,26 @@ export default function Header() {
       templateColumns="max-content 1fr min-content"
       justifyItems="center"
       alignItems="center"
-      bg="white"
+      bg="#202020"
       position="sticky"
       top="0"
       zIndex="10"
-      borderBottom="20px solid #edf2f7"
+      borderBottom="0px solid #edf2f7"
+      mb={'20px'}
     >
       <GridItem justifySelf="start" m="2">
         <Image src="/logo.png" height="30px" ml="2" />
       </GridItem>
       {session ? (
         <>
-          <GridItem justifySelf="end" alignSelf="center" mr="4">
+          <GridItem justifySelf="end" alignSelf="center" mr="4" color={'white'}>
             Welcome <strong>{username}</strong>
           </GridItem>
           <Button
             marginRight="4"
             size="sm"
             variant="link"
+            color={'white'}
             onClick={handleLogOut}
           >
             Log out

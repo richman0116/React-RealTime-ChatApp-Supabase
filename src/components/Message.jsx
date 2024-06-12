@@ -6,22 +6,25 @@ import { MdVerified } from "react-icons/md";
 import { truncateText } from "../utils";
 
 export default function Message({ message, isYou }) {
+
   const countyCode =
     message.country && message.country !== "undefined"
       ? message.country.toLowerCase()
       : "";
+
   return (
     <Box display="grid" justifyItems={isYou ? "end" : "start"}>
       <Grid
-        templateRows="30px 1fr 25px"
+        templateRows={isYou ? "1fr 20px" : "30px 1fr 25px"}
         templateColumns="1fr"
-        w="70%"
+        maxW={isYou ? "80%" : "70%"}
+        w="auto"
         px="3"
         py="2"
-        borderRadius="5px"
-        borderTopLeftRadius={isYou ? "5px" : "0"}
-        borderTopRightRadius={isYou ? "0" : "5px"}
-        bg={isYou ? "#dbfff9" : "#edf3f9"}
+        borderRadius="15px"
+        borderTopLeftRadius={isYou ? "15px" : "0"}
+        borderTopRightRadius={isYou ? "0" : "15px"}
+        bg={isYou ? "#0e3b82" : "#292929"}
         mt="5"
         position="relative"
         _after={{
@@ -32,38 +35,40 @@ export default function Message({ message, isYou }) {
           borderStyle: "solid",
           borderWidth: isYou ? "0px 0px 10px 10px" : "0px 10px 10px 0",
           borderColor: isYou
-            ? "transparent transparent transparent #dbfff9"
-            : "transparent #edf3f9 transparent transparent",
+            ? "transparent transparent transparent #0e3b82"
+            : "transparent #292929 transparent transparent",
           top: 0,
           left: isYou ? "auto" : "-10px",
           right: isYou ? "-10px" : "auto",
         }}
       >
-        <GridItem
-          fontWeight="500"
-          fontSize="md"
-          justifySelf="start"
-          color="gray.500"
-          mb="2"
-        >
-          <span>{message.username} </span>
-          {message.is_authenticated && (
-            <MdVerified
-              color="#1d9bf0"
-              style={{ display: "inline", marginRight: "5px" }}
-            />
-          )}
-          {countyCode && (
-            <Box display="inline-block" fontSize="10px">
-              from {message.country}{" "}
-              <img
-                style={{ display: "inline-block", marginTop: "-4px" }}
-                src={`/flags/${countyCode}.png`}
-                alt={message.country}
+        {!isYou && (
+          <GridItem
+            fontWeight="500"
+            fontSize="md"
+            justifySelf="start"
+            color="gray"
+            mb="2"
+          >
+            <span>{message.username} </span>
+            {message.is_authenticated && (
+              <MdVerified
+                color="#1d9bf0"
+                style={{ display: "inline", marginRight: "5px" }}
               />
-            </Box>
-          )}
-        </GridItem>
+            )}
+            {countyCode && (
+              <Box display="inline-block" fontSize="10px">
+                from {message.country}{" "}
+                <img
+                  style={{ display: "inline-block", marginTop: "-4px" }}
+                  src={`/flags/${countyCode}.png`}
+                  alt={message.country}
+                />
+              </Box>
+            )}
+          </GridItem>
+        )}
         <GridItem
           justifySelf="start"
           textAlign="left"

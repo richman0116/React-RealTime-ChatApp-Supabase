@@ -160,16 +160,17 @@ export default function MessageForm() {
   };
 
   return (
-    <Box py="10px" pt="15px" bg="gray.100">
-      <Container maxW="600px">
+    <Box py="10px" pt="15px" bg="black">
+      <Container maxW="700px">
         <form onSubmit={handleSubmit} autoComplete="off">
           <Stack direction="row">
             <Input
               name="message"
-              placeholder="Enter a message"
+              placeholder="Type a message"
               onChange={handleMessageChange}
               value={message}
-              bg="white"
+              bg="#292929"
+              color="white"
               border="none"
               ref={inputRef}
               autoFocus
@@ -185,7 +186,7 @@ export default function MessageForm() {
             />
           </Stack>
         </form>
-        <Box fontSize="10px" mt="1">
+        <Box fontSize="10px" mt="1" color={'white'}>
           Warning: do not share any sensitive information, it's a public chat room 🙂
         </Box>
       </Container>

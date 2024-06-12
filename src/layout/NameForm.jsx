@@ -59,7 +59,7 @@ export default function NameForm() {
             maxLength="15"
           />
         ) : (
-          <span onClick={toggleEditing} style={{ cursor: "pointer" }}>
+          <span onClick={toggleEditing} style={{ cursor: "pointer", color: "white" }}>
             Welcome <strong>{newUsername}</strong>
           </span>
         )}
