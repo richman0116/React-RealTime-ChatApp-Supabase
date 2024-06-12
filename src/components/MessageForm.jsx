@@ -21,41 +21,65 @@ export default function MessageForm() {
   const inputRef = useRef(null);
   const toast = useToast();
 
+  const fetchMessages = async () => {
+    const { data, error } = await supabase.from("messages").select("*").order('id', { ascending: true });
+    if (error) {
+      console.error("Error fetching messages:", error);
+    } else {
+      setMessages(data);
+    }
+  };
+
   useEffect(() => {
-    const fetchMessages = async () => {
-      const { data, error } = await supabase.from("messages").select("*");
-      if (error) {
-        console.error("Error fetching messages:", error);
-      } else {
-        setMessages(data);
-      }
-    };
     fetchMessages();
   }, []);
 
+  const handleMessageChange = (e) => {
+    if (e.target.value === "") {
+      setIsEditing(false);
+      setEditIndex(null);
+    }
+    setMessage(e.target.value);
+  }
+
   const handleKeyDown = useCallback(
     (event) => {
-      if (event.key === "ArrowUp" && !isEditing && message === "" && messages.length > 0) {
-        const lastIndex = messages.length - 1;
-        const lastMessage = messages[lastIndex];
+      if (
+        event.key === "ArrowUp" &&
+        !isEditing &&
+        message === "" &&
+        messages.length > 0
+      ) {
+        const userMessages = messages.filter(msg => msg.username === username);
+        const lastIndex = userMessages.length - 1;
+        const lastMessage = userMessages[lastIndex];
 
         if (lastMessage && lastMessage.text) {
           setMessage(lastMessage.text);
           setIsEditing(true);
-          setEditIndex(lastIndex);
+          setEditIndex(messages.indexOf(lastMessage));
           inputRef.current.focus();
+
+          // Move cursor to the end of the text
+          setTimeout(() => {
+            inputRef.current.setSelectionRange(lastMessage.text.length, lastMessage.text.length);
+          }, 0);
         }
       }
     },
-    [messages, isEditing, message]
+    [messages, isEditing, message, username]
   );
 
   useEffect(() => {
     const inputElement = inputRef.current;
-    inputElement.addEventListener("keydown", handleKeyDown);
+    if (inputElement) {
+      inputElement.addEventListener("keydown", handleKeyDown);
+    }
 
     return () => {
-      inputElement.removeEventListener("keydown", handleKeyDown);
+      if (inputElement) {
+        inputElement.removeEventListener("keydown", handleKeyDown);
+      }
     };
   }, [handleKeyDown]);
 
@@ -100,20 +124,23 @@ export default function MessageForm() {
           )
         );
       } else {
-        const { data, error } = await supabase.from("messages").insert([
-          {
-            text: message.trim(),
-            username,
-            country,
-            is_authenticated: !!session,
-          },
-        ]).single();
+        const { error } = await supabase
+          .from("messages")
+          .insert([
+            {
+              text: message.trim(),
+              username,
+              country,
+              is_authenticated: !!session,
+            },
+          ])
+          .single();
 
         if (error) {
           throw error;
         }
 
-        setMessages((prevMessages) => [...prevMessages, data]);
+        await fetchMessages();
       }
 
       setIsEditing(false);
@@ -140,7 +167,7 @@ export default function MessageForm() {
             <Input
               name="message"
               placeholder="Enter a message"
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={handleMessageChange}
               value={message}
               bg="white"
               border="none"
