@@ -111,6 +111,15 @@ const AppContextProvider = ({ children }) => {
     setNewIncomingMessageTrigger(payload.new);
   };
 
+  const handleUpdatedMessage = (payload) => {
+   setMessages((prevMessages) => {
+    const messages = prevMessages.map((msg) =>
+      msg.id === payload.new.id ? payload.new : msg
+    );
+    return messages;
+  });
+  }
+
   const getInitialMessages = async () => {
     if (messages.length) return;
 
@@ -151,7 +160,11 @@ const AppContextProvider = ({ children }) => {
           "postgres_changes",
           { event: "*", schema: "public", table: "messages" },
           (payload) => {
-            handleNewMessage(payload);
+            if (payload.eventType === "INSERT") {
+              handleNewMessage(payload);
+            } else if (payload.eventType === "UPDATE") {
+              handleUpdatedMessage(payload);
+            }
           }
         )
         .subscribe();

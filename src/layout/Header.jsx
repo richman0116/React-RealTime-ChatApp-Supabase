@@ -10,10 +10,11 @@ export default function Header() {
 
   const handleLogIn = useCallback(() => {
     const redirectTo = import.meta.env.VITE_SUPABASE_REDIRECT_URL || window.location.origin;
-    supabase.auth.signInWithOAuth({
+    const { user, session, error } = supabase.auth.signInWithOAuth({
       provider: 'github',
       redirectTo,
     });
+    console.log(user?.user_metadata?.avatar_url, "jjjjjjjjjjjjj");
   }, [])
 
   const handleLogOut = useCallback(() => {
